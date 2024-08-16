@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class transitionHandler : MonoBehaviour
 {
     public Animator transition;
+    public Animator transition2;
 
     public void changeScene (int sceneNumber) { 
          StartCoroutine(changingScene(sceneNumber));
@@ -14,6 +15,7 @@ public class transitionHandler : MonoBehaviour
 
     IEnumerator changingScene(int sceneNumber) {
         transition.SetTrigger("Start");
+        transition2.SetTrigger("Start");
 
         yield return new WaitForSeconds(1f);
 
