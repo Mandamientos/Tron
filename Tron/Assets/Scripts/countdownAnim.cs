@@ -16,7 +16,7 @@ public class countdownAnim : MonoBehaviour
 
     IEnumerator countdownHandler() {
 
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(0.1f);
 
         countDown.SetTrigger("Countdown");
 
