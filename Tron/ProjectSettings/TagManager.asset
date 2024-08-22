@@ -44,3 +44,6 @@ TagManager:
   - name: Transition
     uniqueID: 360360255
     locked: 0
+  - name: Sprites
+    uniqueID: 1492407867
+    locked: 0

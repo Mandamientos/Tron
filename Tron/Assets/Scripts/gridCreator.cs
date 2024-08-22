@@ -18,10 +18,9 @@ public class gridCreator : MonoBehaviour
 {
     public int cols = 100;
     public int rows = 100;
-    public float cellSize = 100f;
-
-    private Node[,] grid;
-
+    public float cellSize = 1f;
+    public float nodeRadius = 1f;
+    public Node[,] grid;
     void Start()
     {
         createGrid();
@@ -29,10 +28,9 @@ public class gridCreator : MonoBehaviour
 
     void createGrid() {
         grid = new Node[rows, cols];
-
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                Vector2 pos = new Vector2(i * cellSize, j * cellSize);
+                Vector2 pos = new Vector2(j * cellSize, i * cellSize);
                 grid[i, j] = new Node(pos);
             }
         }
@@ -40,20 +38,19 @@ public class gridCreator : MonoBehaviour
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 if (i > 0) {
-                    grid[i, j].Up = grid[i - 1, j];
+                    grid[i, j].Down = grid[i - 1, j];
                 }
                 if (j < cols - 1) {
                     grid[i, j].Right = grid[i, j + 1];
                 }
                 if (i < rows - 1) {
-                    grid[i, j].Down = grid[i + 1, j];
+                    grid[i, j].Up = grid[i + 1, j];
                 }
                 if (j > 0) {
                     grid[i, j].Left = grid[i, j - 1];
                 }
             }
         }
-        Debug.Log($"{obtainNode(new Vector2(10f, 10f))}");
     }
 
     public Node obtainNode (Vector2 pos) {
@@ -66,5 +63,4 @@ public class gridCreator : MonoBehaviour
         return null;
 
     }
-
 }

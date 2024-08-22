@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/pressAnyButton.unity
     guid: 62cffce26774a51468dc3a9916f33c6d
+  - enabled: 1
+    path: Assets/Scenes/game.unity
+    guid: e66d0e98d09d9fb4ba733e90339d5c2d
   m_configObjects: {}

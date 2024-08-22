@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class anyKey : MonoBehaviour
@@ -16,6 +17,10 @@ public class anyKey : MonoBehaviour
     void Update()
     {
         if (Input.anyKeyDown) {
+            musicHandler music = musicHandler.getInstance();
+
+            StartCoroutine(music.fadeOut());
+
             transitionHandler1.changeScene(3);
         }
     }
