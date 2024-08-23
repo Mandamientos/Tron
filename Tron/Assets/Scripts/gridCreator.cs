@@ -7,6 +7,7 @@ using UnityEngine;
 public class Node {
     public Vector2 pos;
     public Node Up, Down, Left, Right;
+    public enum isOccupied {bike, trail, powerShield, powerHyperVelocity}
 
     public Node(Vector2 pos) {
         this.pos = pos;
