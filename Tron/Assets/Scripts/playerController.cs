@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public class playerController : MonoBehaviour
@@ -15,7 +15,12 @@ public class playerController : MonoBehaviour
     public enum Directions { Up, Down, Left, Right }
     public motorBike bike;
     public GameObject trailsPrefab;
+    public GameObject playerPrefab;
     public GameObject parentCavas;
+    public Sprite riderUp;
+    public Sprite riderDown;
+    public Sprite riderLeft;
+    public Sprite riderRight;
 
     void Start()
     {
@@ -58,7 +63,7 @@ public class playerController : MonoBehaviour
 
         playerNode = grid[xPos, yPos];
 
-        GameObject childObject = Instantiate(trailsPrefab);
+        GameObject childObject = Instantiate(playerPrefab);
         childObject.transform.SetParent(parentCavas.transform, false);
         childObject.transform.localPosition = playerNode.pos;
 
@@ -72,6 +77,7 @@ public class playerController : MonoBehaviour
     public GameObject instantiateTrail(Tuple< Vector2, Node, Directions > result) {
             GameObject child = Instantiate(trailsPrefab);
             child.transform.SetParent(parentCavas.transform);
+            child.transform.SetSiblingIndex(2);
             child.transform.localPosition = result.Item1;
             child.name = $"Trail{++bike.size}";
             return child;
@@ -226,6 +232,8 @@ public class motorBike {
                     if (head.thisNode.Up != null) {
                         this.head.thisNode = head.thisNode.Up;
                         head.identifier.transform.localPosition = this.head.thisNode.pos;
+                        UnityEngine.UI.Image imageComponet = head.identifier.GetComponent<UnityEngine.UI.Image>();
+                        imageComponet.sprite = Instance.riderUp;
                     } else {
                         //die
                     }
@@ -234,6 +242,8 @@ public class motorBike {
                     if (head.thisNode.Down != null) {
                         this.head.thisNode = head.thisNode.Down;
                         head.identifier.transform.localPosition = this.head.thisNode.pos;
+                        UnityEngine.UI.Image imageComponet = head.identifier.GetComponent<UnityEngine.UI.Image>();
+                        imageComponet.sprite = Instance.riderDown;
                     } else {
                         //die
                     }
@@ -242,6 +252,8 @@ public class motorBike {
                     if (head.thisNode.Right != null) {
                         this.head.thisNode = head.thisNode.Right;
                         head.identifier.transform.localPosition = this.head.thisNode.pos;
+                        UnityEngine.UI.Image imageComponet = head.identifier.GetComponent<UnityEngine.UI.Image>();
+                        imageComponet.sprite = Instance.riderRight;
                     } else {
                         //die
                     }
@@ -250,6 +262,8 @@ public class motorBike {
                     if (head.thisNode.Left != null) {
                         this.head.thisNode = head.thisNode.Left;
                         head.identifier.transform.localPosition = this.head.thisNode.pos;
+                        UnityEngine.UI.Image imageComponet = head.identifier.GetComponent<UnityEngine.UI.Image>();
+                        imageComponet.sprite = Instance.riderLeft;
                     } else {
                         //die
                     }

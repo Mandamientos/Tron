@@ -928,9 +928,13 @@ MonoBehaviour:
   player: {fileID: 0}
   speed: 0
   direction: 1
-  bike: {fileID: 0}
   trailsPrefab: {fileID: 5375069270659594975, guid: 275552d45ebd9e24c8ac39bb78c12f6c, type: 3}
+  playerPrefab: {fileID: 5375069270659594975, guid: 7c13985b189d5374aa160afedf58ba59, type: 3}
   parentCavas: {fileID: 835260123}
+  riderUp: {fileID: 21300000, guid: 9f54c9929d55f2c4a89071a69c5ca99a, type: 3}
+  riderDown: {fileID: 21300000, guid: 4613a720f90858d48955d1d4c168ffc4, type: 3}
+  riderLeft: {fileID: 21300000, guid: 26509a0e035f88949a3b5c331c8b2e23, type: 3}
+  riderRight: {fileID: 21300000, guid: 1b0e633fdbc158149a19f5b7d13ff21f, type: 3}
 --- !u!1 &1412157162
 GameObject:
   m_ObjectHideFlags: 0
