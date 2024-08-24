@@ -7,8 +7,9 @@ using UnityEngine;
 public class Node {
     public Vector2 pos;
     public Node Up, Down, Left, Right;
-    public enum states {unoccupied, head, trail, powerShield, powerHyperVelocity, itemTrail, item}
+    public enum states {unoccupied, head, trail, powerShield, powerHyperVelocity, itemTrail, itemFuel, itemBomb}
     public states state;
+    public GameObject objectOnCell;
 
     public Node(Vector2 pos) {
         this.pos = pos;
