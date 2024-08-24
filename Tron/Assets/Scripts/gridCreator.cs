@@ -10,6 +10,7 @@ public class Node {
     public enum states {unoccupied, head, trail, powerShield, powerHyperVelocity, itemTrail, itemFuel, itemBomb}
     public states state;
     public GameObject objectOnCell;
+    public Node reference;
 
     public Node(Vector2 pos) {
         this.pos = pos;

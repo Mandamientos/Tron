@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting;
 
 
 public class playerController : MonoBehaviour
@@ -80,7 +81,7 @@ public class playerController : MonoBehaviour
         int xPos = UnityEngine.Random.Range(0, 50);
         int yPos = UnityEngine.Random.Range(0, 100);
 
-        playerNode = grid[xPos, yPos];
+        playerNode = grid[25, 50];
 
         GameObject childObject = Instantiate(playerPrefab);
         childObject.transform.SetParent(parentCavas.transform, false);
@@ -184,28 +185,29 @@ public class motorBike {
 
                 if (nextDirection == playerController.Directions.Up) {
                     index.identifier.transform.localPosition = index.thisNode.Up.pos;
-                    index.thisNode.state = Node.states.unoccupied;
                     index.thisNode = index.thisNode.Up;
                     index.thisNode.state = Node.states.trail;
                 }
                 if (nextDirection == playerController.Directions.Down) {
                     index.identifier.transform.localPosition = index.thisNode.Down.pos;
-                    index.thisNode.state = Node.states.unoccupied;
                     index.thisNode = index.thisNode.Down;
                     index.thisNode.state = Node.states.trail;
                 }
                 if (nextDirection == playerController.Directions.Right) {
                     index.identifier.transform.localPosition = index.thisNode.Right.pos;
-                    index.thisNode.state = Node.states.unoccupied;
                     index.thisNode = index.thisNode.Right;
                     index.thisNode.state = Node.states.trail;
                 }                
                 if (nextDirection == playerController.Directions.Left) {
                     index.identifier.transform.localPosition = index.thisNode.Left.pos;
-                    index.thisNode.state = Node.states.unoccupied;
                     index.thisNode = index.thisNode.Left;
                     index.thisNode.state = Node.states.unoccupied;
                 }                   
+
+                if (index.nextNode == null) {
+                    var result = handleNode(index.nodeDirectionNext, index);
+                    result.Item2.state = Node.states.unoccupied;
+                }
 
                 index = index.nextNode;
             }
@@ -261,13 +263,13 @@ public class motorBike {
                             UnityEngine.UI.Image imageComponet = head.identifier.GetComponent<UnityEngine.UI.Image>();
                             imageComponet.sprite = Instance.riderUp;
                         } else {
+                            Debug.Log($"PISO UN PODER: {head.thisNode.Up.state}");
                             this.head.thisNode.state = Node.states.unoccupied;
                             this.head.thisNode = head.thisNode.Up;
                             this.head.thisNode.state = Node.states.head;
                             head.identifier.transform.localPosition = this.head.thisNode.pos;
                             UnityEngine.UI.Image imageComponet = head.identifier.GetComponent<UnityEngine.UI.Image>();
                             imageComponet.sprite = Instance.riderUp;
-                            Debug.Log($"PISO UN PODER: {head.thisNode.Up.state}");
                         }
                     } else {
                         //die
@@ -283,13 +285,13 @@ public class motorBike {
                             UnityEngine.UI.Image imageComponet = head.identifier.GetComponent<UnityEngine.UI.Image>();
                             imageComponet.sprite = Instance.riderDown;
                         } else {
+                            Debug.Log($"PISO UN PODER: {head.thisNode.Down.state}");
                             this.head.thisNode.state = Node.states.unoccupied;
                             this.head.thisNode = head.thisNode.Down;
                             this.head.thisNode.state = Node.states.head;
                             head.identifier.transform.localPosition = this.head.thisNode.pos;
                             UnityEngine.UI.Image imageComponet = head.identifier.GetComponent<UnityEngine.UI.Image>();
                             imageComponet.sprite = Instance.riderDown;
-                            Debug.Log($"PISO UN PODER: {head.thisNode.Down.state}");
                         }
                     } else {
                         //die
