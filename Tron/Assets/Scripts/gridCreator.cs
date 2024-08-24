@@ -7,11 +7,13 @@ using UnityEngine;
 public class Node {
     public Vector2 pos;
     public Node Up, Down, Left, Right;
-    public enum isOccupied {bike, trail, powerShield, powerHyperVelocity}
+    public enum states {unoccupied, head, trail, powerShield, powerHyperVelocity, itemTrail, item}
+    public states state;
 
     public Node(Vector2 pos) {
         this.pos = pos;
         Up = Down = Left = Right = null;
+        this.state = states.unoccupied;
     }
 }
 

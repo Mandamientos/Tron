@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 
 public class playerController : MonoBehaviour
@@ -21,6 +22,8 @@ public class playerController : MonoBehaviour
     public Sprite riderDown;
     public Sprite riderLeft;
     public Sprite riderRight;
+    public TMP_Text fuelRemainingText;
+    public int fuelRemaining = 100;
 
     void Start()
     {
@@ -42,12 +45,28 @@ public class playerController : MonoBehaviour
 
         yield return new WaitForSeconds(speed);
 
+        int k = 0;
+        
         while (true) {
             yield return new WaitForSeconds(speed);
 
-            bike.updateDirection(direction);
-            bike.headMovement(player);
-            bike.updateChain();
+            if (fuelRemaining > 0) {
+                if (k == 5) {
+                    k = 0;
+                    fuelRemainingText.text = $"{--fuelRemaining}/100";
+                    bike.updateDirection(direction);
+                    bike.headMovement(player);
+                    bike.updateChain();
+                    continue;
+                }
+
+                bike.updateDirection(direction);
+                bike.headMovement(player);
+                bike.updateChain();
+                ++k;
+            } else {
+                //die
+            }
         }
 
 
