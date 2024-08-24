@@ -55,14 +55,14 @@ public class playerController : MonoBehaviour
                     k = 0;
                     fuelRemainingText.text = $"{--fuelRemaining}/100";
                     bike.updateDirection(direction);
-                    bike.headMovement(player);
                     bike.updateChain();
+                    bike.headMovement(player);
                     continue;
                 }
 
                 bike.updateDirection(direction);
-                bike.headMovement(player);
                 bike.updateChain();
+                bike.headMovement(player);
                 ++k;
             } else {
                 //die
@@ -89,7 +89,7 @@ public class playerController : MonoBehaviour
         childObject.name = "Player";
         
         bike = new motorBike(playerNode, childObject, direction, this);
-        bike.addTrail(10, trailsPrefab, parentCavas);
+        bike.addTrail(30, trailsPrefab, parentCavas);
 
     }
 
@@ -144,7 +144,6 @@ public class motorBike {
 
                 motorNode newTrail;
                 newTrail = new motorNode(result.Item2, child, result.Item3);
-                Debug.Log($"{result.Item1}, {result.Item2.pos}, {result.Item3} | {newTrail}");
                 head.setNext(newTrail);
 
             } else {
@@ -161,7 +160,6 @@ public class motorBike {
 
                 motorNode newTrail;
                 newTrail = new motorNode(result.Item2, child, result.Item3);
-                Debug.Log($"{result.Item1}, {result.Item2.pos}, {result.Item3} | {newTrail}");
                 index.setNext(newTrail);
             }
         }
@@ -170,7 +168,6 @@ public class motorBike {
     public void updateDirection (playerController.Directions direction) {
         this.head.nodeDirectionPrev = this.head.nodeDirectionNext;
         this.head.nodeDirectionNext = direction;
-        Debug.Log($"{this.head.nodeDirectionPrev}, ${this.head.nodeDirectionNext}");
     }
 
     public void updateChain() {
@@ -187,21 +184,28 @@ public class motorBike {
 
                 if (nextDirection == playerController.Directions.Up) {
                     index.identifier.transform.localPosition = index.thisNode.Up.pos;
+                    index.thisNode.state = Node.states.unoccupied;
                     index.thisNode = index.thisNode.Up;
+                    index.thisNode.state = Node.states.trail;
                 }
                 if (nextDirection == playerController.Directions.Down) {
                     index.identifier.transform.localPosition = index.thisNode.Down.pos;
+                    index.thisNode.state = Node.states.unoccupied;
                     index.thisNode = index.thisNode.Down;
+                    index.thisNode.state = Node.states.trail;
                 }
                 if (nextDirection == playerController.Directions.Right) {
                     index.identifier.transform.localPosition = index.thisNode.Right.pos;
+                    index.thisNode.state = Node.states.unoccupied;
                     index.thisNode = index.thisNode.Right;
+                    index.thisNode.state = Node.states.trail;
                 }                
                 if (nextDirection == playerController.Directions.Left) {
                     index.identifier.transform.localPosition = index.thisNode.Left.pos;
+                    index.thisNode.state = Node.states.unoccupied;
                     index.thisNode = index.thisNode.Left;
+                    index.thisNode.state = Node.states.unoccupied;
                 }                   
-                Debug.Log(nextDirection);
 
                 index = index.nextNode;
             }
@@ -248,28 +252,54 @@ public class motorBike {
             switch (head.nodeDirectionNext)
             {
                 case playerController.Directions.Up:
-                    if (head.thisNode.Up != null) {
-                        this.head.thisNode = head.thisNode.Up;
-                        head.identifier.transform.localPosition = this.head.thisNode.pos;
-                        UnityEngine.UI.Image imageComponet = head.identifier.GetComponent<UnityEngine.UI.Image>();
-                        imageComponet.sprite = Instance.riderUp;
+                    if (head.thisNode.Up != null && head.thisNode.Up.state != Node.states.trail && head.thisNode.Up.state != Node.states.head) {
+                        if (head.thisNode.Up.state == Node.states.unoccupied) {
+                            this.head.thisNode.state = Node.states.unoccupied;
+                            this.head.thisNode = head.thisNode.Up;
+                            this.head.thisNode.state = Node.states.head;
+                            head.identifier.transform.localPosition = this.head.thisNode.pos;
+                            UnityEngine.UI.Image imageComponet = head.identifier.GetComponent<UnityEngine.UI.Image>();
+                            imageComponet.sprite = Instance.riderUp;
+                        } else {
+                            this.head.thisNode.state = Node.states.unoccupied;
+                            this.head.thisNode = head.thisNode.Up;
+                            this.head.thisNode.state = Node.states.head;
+                            head.identifier.transform.localPosition = this.head.thisNode.pos;
+                            UnityEngine.UI.Image imageComponet = head.identifier.GetComponent<UnityEngine.UI.Image>();
+                            imageComponet.sprite = Instance.riderUp;
+                            Debug.Log($"PISO UN PODER: {head.thisNode.Up.state}");
+                        }
                     } else {
                         //die
                     }
                     break;
                 case playerController.Directions.Down:
-                    if (head.thisNode.Down != null) {
-                        this.head.thisNode = head.thisNode.Down;
-                        head.identifier.transform.localPosition = this.head.thisNode.pos;
-                        UnityEngine.UI.Image imageComponet = head.identifier.GetComponent<UnityEngine.UI.Image>();
-                        imageComponet.sprite = Instance.riderDown;
+                    if (head.thisNode.Down != null && head.thisNode.Down.state != Node.states.trail && head.thisNode.Up.state != Node.states.head) {
+                        if (head.thisNode.Down.state == Node.states.unoccupied) {
+                            this.head.thisNode.state = Node.states.unoccupied;
+                            this.head.thisNode = head.thisNode.Down;
+                            this.head.thisNode.state = Node.states.head;
+                            head.identifier.transform.localPosition = this.head.thisNode.pos;
+                            UnityEngine.UI.Image imageComponet = head.identifier.GetComponent<UnityEngine.UI.Image>();
+                            imageComponet.sprite = Instance.riderDown;
+                        } else {
+                            this.head.thisNode.state = Node.states.unoccupied;
+                            this.head.thisNode = head.thisNode.Down;
+                            this.head.thisNode.state = Node.states.head;
+                            head.identifier.transform.localPosition = this.head.thisNode.pos;
+                            UnityEngine.UI.Image imageComponet = head.identifier.GetComponent<UnityEngine.UI.Image>();
+                            imageComponet.sprite = Instance.riderDown;
+                            Debug.Log($"PISO UN PODER: {head.thisNode.Down.state}");
+                        }
                     } else {
                         //die
                     }
                     break;
                 case playerController.Directions.Right:
-                    if (head.thisNode.Right != null) {
+                    if (head.thisNode.Right != null && head.thisNode.Right.state != Node.states.trail && head.thisNode.Right.state != Node.states.head) {
+                        this.head.thisNode.state = Node.states.unoccupied;
                         this.head.thisNode = head.thisNode.Right;
+                        this.head.thisNode.state = Node.states.head;
                         head.identifier.transform.localPosition = this.head.thisNode.pos;
                         UnityEngine.UI.Image imageComponet = head.identifier.GetComponent<UnityEngine.UI.Image>();
                         imageComponet.sprite = Instance.riderRight;
@@ -278,8 +308,10 @@ public class motorBike {
                     }
                     break;
                 case playerController.Directions.Left:
-                    if (head.thisNode.Left != null) {
+                    if (head.thisNode.Left != null && head.thisNode.Left.state != Node.states.trail && head.thisNode.Left.state != Node.states.head) {
+                        this.head.thisNode.state = Node.states.unoccupied;
                         this.head.thisNode = head.thisNode.Left;
+                        this.head.thisNode.state = Node.states.head;
                         head.identifier.transform.localPosition = this.head.thisNode.pos;
                         UnityEngine.UI.Image imageComponet = head.identifier.GetComponent<UnityEngine.UI.Image>();
                         imageComponet.sprite = Instance.riderLeft;
