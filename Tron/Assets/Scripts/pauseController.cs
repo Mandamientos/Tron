@@ -14,27 +14,23 @@ public class pauseController : MonoBehaviour
     public Animator animator1;
     public Animator animator2;
 
-
     void Update()
     {
         if(Input.GetKeyDown(KeyCode.Escape)) {
-            unPause();
+            StartCoroutine(unPause());
         }
     }
 
-    public void unPause () {
-
-        if (pausedMenu == null) {
-            pausedMenu = Instantiate(pausedMenuPrefab);
-            pausedMenu.transform.SetParent(pausedMenuParent.transform);
-        }
-
+    public IEnumerator unPause () {
         if (!isPaused) {
             bgsfx.Pause();
             isPaused = true;
+            pausedCanvas.SetTrigger("startPause");
+            yield return new WaitForSeconds(0.3f);
             Time.timeScale = 0f;
         } else {
-            Destroy(pausedMenu);
+            pausedCanvas.SetTrigger("endPause");
+            pausedCanvas.SetTrigger("restart");
             isPaused = false;
             Time.timeScale = 1f;
             bgsfx.UnPause();
@@ -44,6 +40,10 @@ public class pauseController : MonoBehaviour
 
     public void mainMenuStart() {
         StartCoroutine(mainMenu());
+    }
+
+    public void Pause() {
+        StartCoroutine(unPause());
     }
 
     public IEnumerator mainMenu() {

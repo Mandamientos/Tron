@@ -42,7 +42,6 @@ public class powerHandler : MonoBehaviour
         foreach (GameObject item in itemFrames) {
             UnityEngine.UI.Image image = item.GetComponent<UnityEngine.UI.Image>();
             itemImages.Add(image);
-            Debug.Log(image);
         }
 
         playerControllerScript = FindObjectOfType<playerController>();
