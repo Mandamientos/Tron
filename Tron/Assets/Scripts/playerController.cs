@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEngine.SceneManagement;
 
 
 public class playerController : MonoBehaviour
@@ -18,6 +19,7 @@ public class playerController : MonoBehaviour
     public motorBike bike;
     public GameObject trailsPrefab;
     public GameObject playerPrefab;
+    public GameObject explosionPrefab;
     public GameObject parentCavas;
     public Sprite riderUp;
     public Sprite riderDown;
@@ -26,32 +28,39 @@ public class playerController : MonoBehaviour
     public TMP_Text fuelRemainingText;
     public int fuelRemaining = 999;
     public powerHandler powerHandler;
+    public objectsHandler objectsHandler;
     public bool inmune = false;
-    public bool isRunning = true;
+    public bool isAlive = false;
+    public int k;
+    public AudioSource bgMusic;
+    public AudioSource dieSFX;
+    public Animator dieAnim1;
+    public Animator dieAnim2;
 
     void Start()
     {
-        speed = UnityEngine.Random.Range(0.05f, 0.15f);
+        speed = UnityEngine.Random.Range(0.05f, 0.10f);
         direction = Directions.Down;
 
+        objectsHandler = FindObjectOfType<objectsHandler>();
+
         Invoke("setGrid", 0.01f);
-        StartCoroutine(playerMovement());
     }
 
     void Update() {
-        if (Input.GetKeyDown(KeyCode.UpArrow) && direction != Directions.Down) direction = Directions.Up;
-        if (Input.GetKeyDown(KeyCode.DownArrow) && direction != Directions.Up) direction = Directions.Down;
-        if (Input.GetKeyDown(KeyCode.RightArrow) && direction != Directions.Left) direction = Directions.Right;
-        if (Input.GetKeyDown(KeyCode.LeftArrow) && direction != Directions.Right) direction = Directions.Left;
+        if (Input.GetKeyDown(KeyCode.UpArrow) && direction != Directions.Down && bike.head.thisNode.Up != null) direction = Directions.Up;
+        if (Input.GetKeyDown(KeyCode.DownArrow) && direction != Directions.Up && bike.head.thisNode.Down != null) direction = Directions.Down;
+        if (Input.GetKeyDown(KeyCode.RightArrow) && direction != Directions.Left && bike.head.thisNode.Right != null) direction = Directions.Right;
+        if (Input.GetKeyDown(KeyCode.LeftArrow) && direction != Directions.Right && bike.head.thisNode.Left != null) direction = Directions.Left;
     }
 
     public IEnumerator playerMovement() {
 
         yield return new WaitForSeconds(speed);
 
-        int k = 0;
+        this.k = 0;
         
-        while (true) {
+        while (isAlive) {
             yield return new WaitForSeconds(speed);
 
             if (fuelRemaining > 0) {
@@ -69,10 +78,74 @@ public class playerController : MonoBehaviour
                 bike.headMovement();
                 ++k;
             } else {
-                //die
+                StartCoroutine(dieEvent());
             }
         }
 
+
+    }
+
+    public IEnumerator dieEvent() {
+        dieSFX.Play();
+        GameObject explosion = Instantiate(explosionPrefab);
+        explosion.transform.SetParent(parentCavas.transform);
+        explosion.transform.localPosition = bike.head.thisNode.pos;
+        isAlive = false;
+
+        motorNode marker = bike.head;
+
+        while (marker != null) {
+            marker.thisNode.state = Node.states.unoccupied;
+            Destroy(marker.identifier);
+            marker = marker.nextNode;
+            yield return new WaitForSeconds(0.015f);
+        }
+
+        stackNode stackMarker = powerHandler.stack.top;
+        GameObject prefab;
+
+        while (stackMarker != null) {
+            if (stackMarker.powerType == Node.states.powerHyperVelocity) {
+                prefab = powerHandler.hyperVelocityPrefab;
+            } else {
+                prefab = powerHandler.shieldPrefab;
+            }
+            StartCoroutine(powerHandler.generatePower(stackMarker.powerType, prefab));
+            stackMarker = stackMarker.nextNode;
+            powerHandler.stack.pop();
+        }
+
+        queueNode queueMarker = objectsHandler.queue.front;
+
+        while (queueMarker != null) {
+            if (queueMarker.itemType == Node.states.itemTrail) {
+                prefab = objectsHandler.trailItemPrefab;
+            } else if (queueMarker.itemType == Node.states.itemFuel) {
+                prefab = objectsHandler.gascanItemPrefab;
+            } else {
+                prefab = objectsHandler.bombItemPrefab;
+            }
+
+            objectsHandler.generateItem(queueMarker.itemType, prefab);
+            queueMarker = queueMarker.nextNode;
+            objectsHandler.queue.dequeue();
+            objectsHandler.updateQueue();
+        }
+
+        
+
+        while (bgMusic.pitch >= 0) {
+            bgMusic.pitch -= 0.5f * Time.deltaTime;
+            Debug.Log(bgMusic.pitch);
+            yield return null;
+        }
+
+        dieAnim1.SetTrigger("Start");
+        dieAnim2.SetTrigger("Start");
+        yield return new WaitForSeconds(1);
+        SceneManager.LoadScene(0);
+
+        bgMusic.Stop();
 
     }
 
@@ -93,8 +166,8 @@ public class playerController : MonoBehaviour
 
         childObject.name = "Player";
         
-        bike = new motorBike(playerNode, childObject, direction, powerHandler, this);
-        bike.addTrail(30, trailsPrefab, parentCavas);
+        bike = new motorBike(playerNode, childObject, direction, powerHandler, this, objectsHandler);
+        bike.addTrail(3, trailsPrefab, parentCavas);
 
     }
 
@@ -132,12 +205,14 @@ public class motorBike {
     public int size;
     private playerController Instance;
     private powerHandler powerHandler;
+    private objectsHandler objectsHandler;
 
 
-    public motorBike(Node playerNode, GameObject identifier, playerController.Directions direction, powerHandler powerHandler, playerController instance) {
+    public motorBike(Node playerNode, GameObject identifier, playerController.Directions direction, powerHandler powerHandler, playerController instance, objectsHandler objectsHandler) {
         head = new motorNode(playerNode, identifier, direction);
         ++size;
         this.powerHandler = powerHandler;
+        this.objectsHandler = objectsHandler;
         this.Instance = instance;
     }
 
@@ -316,9 +391,8 @@ public class motorBike {
                             imageComponet.sprite = Instance.riderUp;
                         }
                     } else {
-                        //die
                         if (!Instance.inmune) {
-
+                            Instance.StartCoroutine(Instance.dieEvent());
                         } else {
                             if (head.thisNode.Up != null) {
                                 this.head.thisNode.state = Node.states.unoccupied;
@@ -351,7 +425,7 @@ public class motorBike {
                         }
                     } else {
                         if (!Instance.inmune) {
-
+                            Instance.StartCoroutine(Instance.dieEvent());
                         } else {
                             if (head.thisNode.Down != null) {
                                 this.head.thisNode.state = Node.states.unoccupied;
@@ -385,7 +459,7 @@ public class motorBike {
                         }
                     } else {
                         if (!Instance.inmune) {
-
+                            Instance.StartCoroutine(Instance.dieEvent());
                         } else {
                             if (head.thisNode.Right != null) {
                                 this.head.thisNode.state = Node.states.unoccupied;
@@ -418,7 +492,7 @@ public class motorBike {
                         }
                     } else {
                         if (!Instance.inmune) {
-
+                            Instance.StartCoroutine(Instance.dieEvent());
                         } else {
                             if (head.thisNode.Left != null) {
                                 this.head.thisNode.state = Node.states.unoccupied;
@@ -440,6 +514,15 @@ public class motorBike {
                 break;
             case Node.states.powerShield:
                 powerHandler.pickupPower(Node.states.powerShield, node);
+                break;
+            case Node.states.itemFuel:
+                objectsHandler.pickUpItem(state, node);
+                break;
+            case Node.states.itemBomb:
+                objectsHandler.pickUpItem(state, node);
+                break;
+            case Node.states.itemTrail:
+                objectsHandler.pickUpItem(state, node);
                 break;
         }
     } 

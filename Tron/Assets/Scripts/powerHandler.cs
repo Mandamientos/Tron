@@ -33,7 +33,7 @@ public class powerHandler : MonoBehaviour
     public List<GameObject> itemFrames = new List<GameObject>();
     public List<UnityEngine.UI.Image> itemImages = new List<UnityEngine.UI.Image>();
     private Node[,] grid;
-    powerStack stack;
+    public powerStack stack;
 
     void Start()
     {        
@@ -52,7 +52,7 @@ public class powerHandler : MonoBehaviour
     }
 
     public IEnumerator randomPower() {
-        while (playerControllerScript.isRunning) {
+        while (true) {
             Debug.Log("poder generado");
             int random = UnityEngine.Random.Range(1, 3);
             if (random == 1) {
@@ -140,7 +140,7 @@ public class powerHandler : MonoBehaviour
                 middleNode.Left.reference = null;
             }
             if (middleNode.Right != null) {
-                middleNode.Left.state = Node.states.unoccupied;
+                middleNode.Right.state = Node.states.unoccupied;
                 middleNode.Right.reference = null;
             }
             stack.push(power);
@@ -155,7 +155,9 @@ public class powerHandler : MonoBehaviour
         velocity.transform.SetParent(shieldParent.transform);
         velocity.transform.localPosition = playerControllerScript.bike.head.thisNode.pos;
         powerActivated.Play();
+        playerControllerScript.k = 9999;
         yield return new WaitForSeconds(5);
+        playerControllerScript.k = 0;
         Destroy(velocity);
         playerControllerScript.speed = previousSpeed;
         isRunningPower = false;
@@ -215,7 +217,7 @@ public class powerHandler : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Alpha3)) {
             stack.orderStack(3, stack);
         }
-        if(Input.GetKeyDown(KeyCode.Alpha3)) {
+        if(Input.GetKeyDown(KeyCode.Alpha4)) {
             stack.orderStack(4, stack);
         }
         if(Input.GetKeyDown(KeyCode.Alpha5)) {
@@ -232,7 +234,7 @@ public class powerHandler : MonoBehaviour
     
 }
 
-class stackNode {
+public class stackNode {
     public Node.states powerType;
     public stackNode nextNode;
 
@@ -242,7 +244,7 @@ class stackNode {
     }
 }
 
-class powerStack {
+public class powerStack {
     public stackNode top;
     public int maxSize = 7;
     public int size;
