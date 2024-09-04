@@ -16,6 +16,10 @@ public class countdownAnim : MonoBehaviour
     public botController greenBotID;
     public GameObject blueBot;
     public botController blueBotID;
+    public GameObject purpleBot;
+    public botController purpleBotID;
+    public GameObject yellowBot;
+    public botController yellowBotID;
 
 
     void Start()
@@ -23,6 +27,8 @@ public class countdownAnim : MonoBehaviour
         playerControllerScript = FindObjectOfType<playerController>();
         greenBotID = greenBot.GetComponent<botController>();
         blueBotID = blueBot.GetComponent<botController>();
+        purpleBotID = purpleBot.GetComponent<botController>();
+        yellowBotID = yellowBot.GetComponent<botController>();
         
         StartCoroutine(countdownHandler());
     }
@@ -48,9 +54,12 @@ public class countdownAnim : MonoBehaviour
         playerControllerScript.isAlive = true;
         greenBotID.isAlive = true;
         blueBotID.isAlive = true;
+        purpleBotID.isAlive = true;
+        yellowBotID.isAlive = true;
         StartCoroutine(playerControllerScript.playerMovement());
         StartCoroutine(greenBotID.updateBot());
         StartCoroutine(blueBotID.updateBot());
-
+        StartCoroutine(purpleBotID.updateBot());
+        StartCoroutine(yellowBotID.updateBot());
     }
 }

@@ -211,7 +211,7 @@ public class botBike {
             case botController.Directions.Up:
                     if (head.thisNode.Up != null && head.thisNode.Up.state != Node.states.trail && head.thisNode.Up.state != Node.states.head) {
                         if (head.thisNode.Up.state == Node.states.unoccupied) {
-                            this.head.thisNode.state = Node.states.unoccupied;
+                            this.head.thisNode.state = Node.states.trail;
                             this.head.thisNode = head.thisNode.Up;
                             this.head.thisNode.state = Node.states.head;
                             head.identifier.transform.localPosition = this.head.thisNode.pos;
@@ -219,7 +219,7 @@ public class botBike {
                             imageComponet.sprite = instance.botUp;
                         } else {
                             pickupPowerAux(head.thisNode.Up.state, head.thisNode.Up);
-                            this.head.thisNode.state = Node.states.unoccupied;
+                            this.head.thisNode.state = Node.states.trail;
                             this.head.thisNode = head.thisNode.Up;
                             this.head.thisNode.state = Node.states.head;
                             head.identifier.transform.localPosition = this.head.thisNode.pos;
@@ -231,7 +231,7 @@ public class botBike {
                             instance.StartCoroutine(instance.dieEvent());
                         } else {
                             if (head.thisNode.Up != null) {
-                                this.head.thisNode.state = Node.states.unoccupied;
+                                this.head.thisNode.state = Node.states.trail;
                                 this.head.thisNode = head.thisNode.Up;
                                 this.head.thisNode.state = Node.states.head;
                                 head.identifier.transform.localPosition = this.head.thisNode.pos;
@@ -245,7 +245,7 @@ public class botBike {
             case botController.Directions.Down:
                     if (head.thisNode.Down != null && head.thisNode.Down.state != Node.states.trail && head.thisNode.Down.state != Node.states.head) {
                         if (head.thisNode.Down.state == Node.states.unoccupied) {
-                            this.head.thisNode.state = Node.states.unoccupied;
+                            this.head.thisNode.state = Node.states.trail;
                             this.head.thisNode = head.thisNode.Down;
                             this.head.thisNode.state = Node.states.head;
                             head.identifier.transform.localPosition = this.head.thisNode.pos;
@@ -253,7 +253,7 @@ public class botBike {
                             imageComponet.sprite = instance.botDown;
                         } else {
                             pickupPowerAux(head.thisNode.Down.state, head.thisNode.Down);
-                            this.head.thisNode.state = Node.states.unoccupied;
+                            this.head.thisNode.state = Node.states.trail;
                             this.head.thisNode = head.thisNode.Down;
                             this.head.thisNode.state = Node.states.head;
                             head.identifier.transform.localPosition = this.head.thisNode.pos;
@@ -265,7 +265,7 @@ public class botBike {
                             instance.StartCoroutine(instance.dieEvent());
                         } else {
                             if (head.thisNode.Up != null) {
-                                this.head.thisNode.state = Node.states.unoccupied;
+                                this.head.thisNode.state = Node.states.trail;
                                 this.head.thisNode = head.thisNode.Down;
                                 this.head.thisNode.state = Node.states.head;
                                 head.identifier.transform.localPosition = this.head.thisNode.pos;
@@ -279,7 +279,7 @@ public class botBike {
             case botController.Directions.Left:
                     if (head.thisNode.Left != null && head.thisNode.Left.state != Node.states.trail && head.thisNode.Left.state != Node.states.head) {
                         if (head.thisNode.Left.state == Node.states.unoccupied) {
-                            this.head.thisNode.state = Node.states.unoccupied;
+                            this.head.thisNode.state = Node.states.trail;
                             this.head.thisNode = head.thisNode.Left;
                             this.head.thisNode.state = Node.states.head;
                             head.identifier.transform.localPosition = this.head.thisNode.pos;
@@ -287,7 +287,7 @@ public class botBike {
                             imageComponet.sprite = instance.botLeft;
                         } else {
                             pickupPowerAux(head.thisNode.Left.state, head.thisNode.Left);
-                            this.head.thisNode.state = Node.states.unoccupied;
+                            this.head.thisNode.state = Node.states.trail;
                             this.head.thisNode = head.thisNode.Left;
                             this.head.thisNode.state = Node.states.head;
                             head.identifier.transform.localPosition = this.head.thisNode.pos;
@@ -299,7 +299,7 @@ public class botBike {
                             instance.StartCoroutine(instance.dieEvent());
                         } else {
                             if (head.thisNode.Up != null) {
-                                this.head.thisNode.state = Node.states.unoccupied;
+                                this.head.thisNode.state = Node.states.trail;
                                 this.head.thisNode = head.thisNode.Left;
                                 this.head.thisNode.state = Node.states.head;
                                 head.identifier.transform.localPosition = this.head.thisNode.pos;
@@ -313,7 +313,7 @@ public class botBike {
             case botController.Directions.Right:
                     if (head.thisNode.Right != null && head.thisNode.Right.state != Node.states.trail && head.thisNode.Right.state != Node.states.head) {
                         if (head.thisNode.Right.state == Node.states.unoccupied) {
-                            this.head.thisNode.state = Node.states.unoccupied;
+                            this.head.thisNode.state = Node.states.trail;
                             this.head.thisNode = head.thisNode.Right;
                             this.head.thisNode.state = Node.states.head;
                             head.identifier.transform.localPosition = this.head.thisNode.pos;
@@ -321,7 +321,7 @@ public class botBike {
                             imageComponet.sprite = instance.botRight;
                         } else {
                             pickupPowerAux(head.thisNode.Right.state, head.thisNode.Right);
-                            this.head.thisNode.state = Node.states.unoccupied;
+                            this.head.thisNode.state = Node.states.trail;
                             this.head.thisNode = head.thisNode.Right;
                             this.head.thisNode.state = Node.states.head;
                             head.identifier.transform.localPosition = this.head.thisNode.pos;
@@ -333,7 +333,7 @@ public class botBike {
                             instance.StartCoroutine(instance.dieEvent());
                         } else {
                             if (head.thisNode.Up != null) {
-                                this.head.thisNode.state = Node.states.unoccupied;
+                                this.head.thisNode.state = Node.states.trail;
                                 this.head.thisNode = head.thisNode.Right;
                                 this.head.thisNode.state = Node.states.head;
                                 head.identifier.transform.localPosition = this.head.thisNode.pos;
