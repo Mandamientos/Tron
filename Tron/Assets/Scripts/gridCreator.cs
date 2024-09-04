@@ -11,6 +11,7 @@ public class Node {
     public states state;
     public GameObject objectOnCell;
     public Node reference;
+    public botController botHeadInstance;
 
     public Node(Vector2 pos) {
         this.pos = pos;

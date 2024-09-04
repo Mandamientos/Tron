@@ -71,6 +71,7 @@ public class powerHandler : MonoBehaviour
         gridScript = FindObjectOfType<gridCreator>();
         this.grid = gridScript.grid;
 
+
         int cols = UnityEngine.Random.Range(0, 100);
         int rows = UnityEngine.Random.Range(0, 50);
 

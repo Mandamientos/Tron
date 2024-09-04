@@ -8,6 +8,7 @@ public class botController : MonoBehaviour
 {
     public gridCreator gridScript;
     public Node[,] grid;
+    public playerController playerControllerScript;
     public GameObject parentObject;
     public GameObject botPrefab;
     public GameObject botTrailPrefab;
@@ -34,6 +35,7 @@ public class botController : MonoBehaviour
     {
         botSpeed = UnityEngine.Random.Range(0.05f, 0.1f);
         gridScript = FindObjectOfType<gridCreator>();
+        playerControllerScript = FindObjectOfType<playerController>();
         queue = GetComponent<botQueue>();
         stack = GetComponent<botStack>();
         
@@ -80,10 +82,10 @@ public class botController : MonoBehaviour
         int randomNum = UnityEngine.Random.Range(0, 15);
         List<Directions> possibleMovements = new List<Directions>();
         if (randomNum == 5) {
-            if (bike.head.thisNode.Up != null && bike.head.nodeDirectionNext != Directions.Down) possibleMovements.Add(Directions.Up);
-            if (bike.head.thisNode.Down != null && bike.head.nodeDirectionNext != Directions.Up) possibleMovements.Add(Directions.Down);
-            if (bike.head.thisNode.Left != null && bike.head.nodeDirectionNext != Directions.Right) possibleMovements.Add(Directions.Left);
-            if (bike.head.thisNode.Right != null && bike.head.nodeDirectionNext != Directions.Left) possibleMovements.Add(Directions.Right);
+            if (bike.head.thisNode.Up != null && bike.head.nodeDirectionNext != Directions.Down && bike.head.thisNode.Up.state != Node.states.trail) possibleMovements.Add(Directions.Up);
+            if (bike.head.thisNode.Down != null && bike.head.nodeDirectionNext != Directions.Up && bike.head.thisNode.Down.state != Node.states.trail) possibleMovements.Add(Directions.Down);
+            if (bike.head.thisNode.Left != null && bike.head.nodeDirectionNext != Directions.Right && bike.head.thisNode.Left.state != Node.states.trail) possibleMovements.Add(Directions.Left);
+            if (bike.head.thisNode.Right != null && bike.head.nodeDirectionNext != Directions.Left && bike.head.thisNode.Right.state != Node.states.trail) possibleMovements.Add(Directions.Right);
             int randomIndex = UnityEngine.Random.Range(0, possibleMovements.Count);
             direction = possibleMovements[randomIndex];
         } else {
@@ -129,6 +131,7 @@ public class botController : MonoBehaviour
         explosion.transform.SetParent(parentObject.transform);
         explosion.transform.localPosition = bike.head.thisNode.pos;
         isAlive = false;
+        playerControllerScript.botCount--;
 
         botBikeNode marker = bike.head;
 
@@ -212,16 +215,20 @@ public class botBike {
                     if (head.thisNode.Up != null && head.thisNode.Up.state != Node.states.trail && head.thisNode.Up.state != Node.states.head) {
                         if (head.thisNode.Up.state == Node.states.unoccupied) {
                             this.head.thisNode.state = Node.states.trail;
+                            this.head.thisNode.botHeadInstance = null;
                             this.head.thisNode = head.thisNode.Up;
                             this.head.thisNode.state = Node.states.head;
+                            this.head.thisNode.botHeadInstance = instance;
                             head.identifier.transform.localPosition = this.head.thisNode.pos;
                             UnityEngine.UI.Image imageComponet = head.identifier.GetComponent<UnityEngine.UI.Image>();
                             imageComponet.sprite = instance.botUp;
                         } else {
                             pickupPowerAux(head.thisNode.Up.state, head.thisNode.Up);
                             this.head.thisNode.state = Node.states.trail;
+                            this.head.thisNode.botHeadInstance = null;
                             this.head.thisNode = head.thisNode.Up;
                             this.head.thisNode.state = Node.states.head;
+                            this.head.thisNode.botHeadInstance = instance;
                             head.identifier.transform.localPosition = this.head.thisNode.pos;
                             UnityEngine.UI.Image imageComponet = head.identifier.GetComponent<UnityEngine.UI.Image>();
                             imageComponet.sprite = instance.botUp;
@@ -229,11 +236,18 @@ public class botBike {
                     } else {
                         if (!instance.isInmune) {
                             instance.StartCoroutine(instance.dieEvent());
+                            if (head.thisNode.Up.state == Node.states.head) {
+                                if (head.thisNode.Up.botHeadInstance != null) {
+                                    head.thisNode.Up.botHeadInstance.StartCoroutine(head.thisNode.Up.botHeadInstance.dieEvent());
+                                }
+                            }
                         } else {
                             if (head.thisNode.Up != null) {
                                 this.head.thisNode.state = Node.states.trail;
+                                this.head.thisNode.botHeadInstance = null;
                                 this.head.thisNode = head.thisNode.Up;
                                 this.head.thisNode.state = Node.states.head;
+                                this.head.thisNode.botHeadInstance = instance;
                                 head.identifier.transform.localPosition = this.head.thisNode.pos;
                                 UnityEngine.UI.Image imageComponet = head.identifier.GetComponent<UnityEngine.UI.Image>();
                                 imageComponet.sprite = instance.botUp;
@@ -246,16 +260,20 @@ public class botBike {
                     if (head.thisNode.Down != null && head.thisNode.Down.state != Node.states.trail && head.thisNode.Down.state != Node.states.head) {
                         if (head.thisNode.Down.state == Node.states.unoccupied) {
                             this.head.thisNode.state = Node.states.trail;
+                            this.head.thisNode.botHeadInstance = null;
                             this.head.thisNode = head.thisNode.Down;
                             this.head.thisNode.state = Node.states.head;
+                            this.head.thisNode.botHeadInstance = instance;
                             head.identifier.transform.localPosition = this.head.thisNode.pos;
                             UnityEngine.UI.Image imageComponet = head.identifier.GetComponent<UnityEngine.UI.Image>();
                             imageComponet.sprite = instance.botDown;
                         } else {
                             pickupPowerAux(head.thisNode.Down.state, head.thisNode.Down);
                             this.head.thisNode.state = Node.states.trail;
+                            this.head.thisNode.botHeadInstance = null;
                             this.head.thisNode = head.thisNode.Down;
                             this.head.thisNode.state = Node.states.head;
+                            this.head.thisNode.botHeadInstance = instance;
                             head.identifier.transform.localPosition = this.head.thisNode.pos;
                             UnityEngine.UI.Image imageComponet = head.identifier.GetComponent<UnityEngine.UI.Image>();
                             imageComponet.sprite = instance.botDown;
@@ -263,11 +281,18 @@ public class botBike {
                     } else {
                         if (!instance.isInmune) {
                             instance.StartCoroutine(instance.dieEvent());
+                            if (head.thisNode.Down.state == Node.states.head) {
+                                if (head.thisNode.Down.botHeadInstance != null) {
+                                    head.thisNode.Down.botHeadInstance.StartCoroutine(head.thisNode.Down.botHeadInstance.dieEvent());
+                                }
+                            }
                         } else {
                             if (head.thisNode.Up != null) {
                                 this.head.thisNode.state = Node.states.trail;
+                                this.head.thisNode.botHeadInstance = null;
                                 this.head.thisNode = head.thisNode.Down;
                                 this.head.thisNode.state = Node.states.head;
+                                this.head.thisNode.botHeadInstance = instance;
                                 head.identifier.transform.localPosition = this.head.thisNode.pos;
                                 UnityEngine.UI.Image imageComponet = head.identifier.GetComponent<UnityEngine.UI.Image>();
                                 imageComponet.sprite = instance.botDown;
@@ -280,16 +305,20 @@ public class botBike {
                     if (head.thisNode.Left != null && head.thisNode.Left.state != Node.states.trail && head.thisNode.Left.state != Node.states.head) {
                         if (head.thisNode.Left.state == Node.states.unoccupied) {
                             this.head.thisNode.state = Node.states.trail;
+                            this.head.thisNode.botHeadInstance = null;
                             this.head.thisNode = head.thisNode.Left;
                             this.head.thisNode.state = Node.states.head;
+                            this.head.thisNode.botHeadInstance = instance;
                             head.identifier.transform.localPosition = this.head.thisNode.pos;
                             UnityEngine.UI.Image imageComponet = head.identifier.GetComponent<UnityEngine.UI.Image>();
                             imageComponet.sprite = instance.botLeft;
                         } else {
                             pickupPowerAux(head.thisNode.Left.state, head.thisNode.Left);
                             this.head.thisNode.state = Node.states.trail;
+                            this.head.thisNode.botHeadInstance = null;
                             this.head.thisNode = head.thisNode.Left;
                             this.head.thisNode.state = Node.states.head;
+                            this.head.thisNode.botHeadInstance = instance;
                             head.identifier.transform.localPosition = this.head.thisNode.pos;
                             UnityEngine.UI.Image imageComponet = head.identifier.GetComponent<UnityEngine.UI.Image>();
                             imageComponet.sprite = instance.botLeft;
@@ -297,11 +326,18 @@ public class botBike {
                     } else {
                         if (!instance.isInmune) {
                             instance.StartCoroutine(instance.dieEvent());
+                            if (head.thisNode.Left.state == Node.states.head) {
+                                if (head.thisNode.Left.botHeadInstance != null) {
+                                    head.thisNode.Left.botHeadInstance.StartCoroutine(head.thisNode.Left.botHeadInstance.dieEvent());
+                                }
+                            }
                         } else {
                             if (head.thisNode.Up != null) {
                                 this.head.thisNode.state = Node.states.trail;
+                                this.head.thisNode.botHeadInstance = null;
                                 this.head.thisNode = head.thisNode.Left;
                                 this.head.thisNode.state = Node.states.head;
+                                this.head.thisNode.botHeadInstance = instance;
                                 head.identifier.transform.localPosition = this.head.thisNode.pos;
                                 UnityEngine.UI.Image imageComponet = head.identifier.GetComponent<UnityEngine.UI.Image>();
                                 imageComponet.sprite = instance.botLeft;
@@ -314,16 +350,20 @@ public class botBike {
                     if (head.thisNode.Right != null && head.thisNode.Right.state != Node.states.trail && head.thisNode.Right.state != Node.states.head) {
                         if (head.thisNode.Right.state == Node.states.unoccupied) {
                             this.head.thisNode.state = Node.states.trail;
+                            this.head.thisNode.botHeadInstance = null;
                             this.head.thisNode = head.thisNode.Right;
                             this.head.thisNode.state = Node.states.head;
+                            this.head.thisNode.botHeadInstance = instance;
                             head.identifier.transform.localPosition = this.head.thisNode.pos;
                             UnityEngine.UI.Image imageComponet = head.identifier.GetComponent<UnityEngine.UI.Image>();
                             imageComponet.sprite = instance.botRight;
                         } else {
                             pickupPowerAux(head.thisNode.Right.state, head.thisNode.Right);
                             this.head.thisNode.state = Node.states.trail;
+                            this.head.thisNode.botHeadInstance = null;
                             this.head.thisNode = head.thisNode.Right;
                             this.head.thisNode.state = Node.states.head;
+                            this.head.thisNode.botHeadInstance = instance;
                             head.identifier.transform.localPosition = this.head.thisNode.pos;
                             UnityEngine.UI.Image imageComponet = head.identifier.GetComponent<UnityEngine.UI.Image>();
                             imageComponet.sprite = instance.botRight;
@@ -331,11 +371,18 @@ public class botBike {
                     } else {
                         if (!instance.isInmune) {
                             instance.StartCoroutine(instance.dieEvent());
+                            if (head.thisNode.Right.state == Node.states.head) {
+                                if (head.thisNode.Right.botHeadInstance != null) {
+                                    head.thisNode.Right.botHeadInstance.StartCoroutine(head.thisNode.Right.botHeadInstance.dieEvent());
+                                }
+                            }
                         } else {
                             if (head.thisNode.Up != null) {
                                 this.head.thisNode.state = Node.states.trail;
+                                this.head.thisNode.botHeadInstance = null;
                                 this.head.thisNode = head.thisNode.Right;
                                 this.head.thisNode.state = Node.states.head;
+                                this.head.thisNode.botHeadInstance = instance;
                                 head.identifier.transform.localPosition = this.head.thisNode.pos;
                                 UnityEngine.UI.Image imageComponet = head.identifier.GetComponent<UnityEngine.UI.Image>();
                                 imageComponet.sprite = instance.botRight;

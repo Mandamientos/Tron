@@ -32,6 +32,7 @@ public class playerController : MonoBehaviour
     public bool inmune = false;
     public bool isAlive = false;
     public int k;
+    public int botCount = 4;
     public AudioSource bgMusic;
     public AudioSource dieSFX;
     public Animator dieAnim1;
@@ -60,7 +61,7 @@ public class playerController : MonoBehaviour
 
         this.k = 0;
         
-        while (isAlive) {
+        while (isAlive && botCount > 0) {
             yield return new WaitForSeconds(speed);
 
             if (fuelRemaining > 0) {
@@ -82,6 +83,18 @@ public class playerController : MonoBehaviour
             }
         }
 
+        while (bgMusic.pitch >= 0) {
+            bgMusic.pitch -= 0.5f * Time.deltaTime;
+            Debug.Log(bgMusic.pitch);
+            yield return null;
+        }
+
+        dieAnim1.SetTrigger("Start");
+        dieAnim2.SetTrigger("Start");
+        yield return new WaitForSeconds(1);
+        SceneManager.LoadScene(4);
+
+        bgMusic.Stop();
 
     }
 
