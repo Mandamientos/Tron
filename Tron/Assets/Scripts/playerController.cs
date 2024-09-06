@@ -99,6 +99,7 @@ public class playerController : MonoBehaviour
     }
 
     public IEnumerator dieEvent() {
+        dieSFX.volume = PlayerPrefs.GetFloat("SFXVolume", 1f);
         dieSFX.Play();
         GameObject explosion = Instantiate(explosionPrefab);
         explosion.transform.SetParent(parentCavas.transform);

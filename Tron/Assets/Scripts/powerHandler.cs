@@ -66,17 +66,44 @@ public class powerHandler : MonoBehaviour
 
     public IEnumerator generatePower(Node.states state, GameObject prefab) {
 
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(6f);
 
         gridScript = FindObjectOfType<gridCreator>();
         this.grid = gridScript.grid;
 
+        Node randomNode = null;
+        bool generable = false;
 
-        int cols = UnityEngine.Random.Range(0, 100);
-        int rows = UnityEngine.Random.Range(0, 50);
+        while (!generable) {
+            int cols = UnityEngine.Random.Range(0, 100);
+            int rows = UnityEngine.Random.Range(0, 50);
 
-        Node randomNode = grid[rows, cols];
+            randomNode = grid[rows, cols];
+            
+            if (randomNode.Up != null) {
+                if (randomNode.Up.state != Node.states.unoccupied) {
+                    continue;
+                }
+            }
+            if (randomNode.Down != null) {
+                if (randomNode.Down.state != Node.states.unoccupied) {
+                    continue;
+                }
+            }
+            if (randomNode.Left != null) {
+                if (randomNode.Left.state != Node.states.unoccupied) {
+                    continue;
+                }
+            }
+            if (randomNode.Right != null) {
+                if (randomNode.Right.state != Node.states.unoccupied) {
+                    continue;
+                }
+            }
 
+            generable = true;
+        }
+        
         randomNode.state = state;
         randomNode.reference = randomNode;
 
@@ -155,6 +182,7 @@ public class powerHandler : MonoBehaviour
         GameObject velocity = Instantiate(velocityActivatedPrefab);
         velocity.transform.SetParent(shieldParent.transform);
         velocity.transform.localPosition = playerControllerScript.bike.head.thisNode.pos;
+        powerActivated.volume = PlayerPrefs.GetFloat("SFXVolume", 0);
         powerActivated.Play();
         playerControllerScript.k = 9999;
         yield return new WaitForSeconds(5);
@@ -170,6 +198,7 @@ public class powerHandler : MonoBehaviour
         GameObject shield = Instantiate(shieldActivatedPrefab);
         shield.transform.SetParent(shieldParent.transform);
         shield.transform.localPosition = playerControllerScript.bike.head.thisNode.pos;
+        powerActivated.volume = PlayerPrefs.GetFloat("SFXVolume", 0);
         powerActivated.Play();
 
         Animator animator = shield.GetComponent<Animator>();
@@ -279,21 +308,78 @@ public class powerStack {
 
     public void orderStack(int index, powerStack stack) {
         if (stack.size >= index) {
-            powerStack auxStack = new powerStack(instance);
+            auxQueue auxQueue = new auxQueue();
+            int customPriority = index;
             for (int i = 1; i < index; i++) {
-                auxStack.push(top.powerType);
+                auxQueue.enqueue(top.powerType, customPriority);
+                --customPriority;
                 stack.pop();
+                auxQueue.iterar();
             }
 
             stackNode newTop = stack.top;
             stack.pop();
 
-            while (auxStack.top != null) {
-                stack.push(auxStack.top.powerType);
-                auxStack.pop();
+            while (auxQueue.front != null) {
+                Node.states newElement = auxQueue.dequeue();
+                Debug.Log(newElement);
+                Debug.Log(auxQueue.front);
+                stack.push(newElement);
             }
 
             stack.push(newTop.powerType);
+        }
+    }
+}
+
+public class auxQueueNode {
+    public auxQueueNode nextNode;
+    public Node.states powerType;
+    public int priority;
+
+    public auxQueueNode(int priority, Node.states powerType) {
+        this.priority = priority;
+        this.nextNode = null;
+        this.powerType = powerType;
+    }
+}
+
+public class auxQueue {
+    public auxQueueNode front;
+    public auxQueueNode rear;
+
+    public void enqueue (Node.states powerType, int priority) {
+        auxQueueNode newNode = new auxQueueNode(priority, powerType);
+            if (front == null) {
+                front = newNode;
+                rear = newNode;
+            } else if (front.priority > newNode.priority) {
+                newNode.nextNode = front;
+                front = newNode;
+            } else {
+                auxQueueNode marker = front;
+                while (marker.nextNode != null && marker.nextNode.priority <= newNode.priority) {
+                    marker = marker.nextNode;
+                }
+
+                newNode.nextNode = marker.nextNode;
+                marker.nextNode = newNode;
+                if (newNode.nextNode == null) {
+                    rear = newNode;
+                }
+            }
+        }
+
+    public Node.states dequeue () {
+        auxQueueNode frontNode = front;
+        front = front.nextNode;
+        return frontNode.powerType;
+    }
+    public void iterar() {
+        auxQueueNode marker = front;
+        while (marker != null) {
+            Debug.Log($"{marker.powerType} : {marker.priority} ");
+            marker = marker.nextNode;
         }
     }
 }

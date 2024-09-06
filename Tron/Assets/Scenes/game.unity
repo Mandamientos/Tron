@@ -741,6 +741,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridScript: {fileID: 1061572473}
+  playerControllerScript: {fileID: 0}
   parentObject: {fileID: 983184555}
   botPrefab: {fileID: 5537554657140133606, guid: c764fe1d1b4e13c428d57f0dd1984659, type: 3}
   botTrailPrefab: {fileID: 3397782529442805971, guid: 42b7e8ca017682a419cb0e7f2333d5c9, type: 3}
@@ -3383,6 +3384,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridScript: {fileID: 1061572473}
+  playerControllerScript: {fileID: 0}
   parentObject: {fileID: 567847788}
   botPrefab: {fileID: 8969150552665387715, guid: 69f20fdf76b759a44af640bc769a30d3, type: 3}
   botTrailPrefab: {fileID: 3555788859921767153, guid: 71f8f089e31c31940bc22d2d0b84786e, type: 3}
@@ -4944,6 +4946,7 @@ MonoBehaviour:
   inmune: 0
   isAlive: 0
   k: 0
+  botCount: 4
   bgMusic: {fileID: 1346068612}
   dieSFX: {fileID: 664561981}
   dieAnim1: {fileID: 1868801839}
@@ -5191,6 +5194,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridScript: {fileID: 1061572473}
+  playerControllerScript: {fileID: 0}
   parentObject: {fileID: 1985661052}
   botPrefab: {fileID: 3598762948300559745, guid: 07c9a09471175c348a5dfc26dbda1485, type: 3}
   botTrailPrefab: {fileID: 8010534279697810403, guid: 38c99ccbcad8ce345b0f880199379760, type: 3}
@@ -5297,6 +5301,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridScript: {fileID: 1061572473}
+  playerControllerScript: {fileID: 0}
   parentObject: {fileID: 285531731}
   botPrefab: {fileID: 2353522063079998313, guid: 591c56948ec24cc4b95483f786199e64, type: 3}
   botTrailPrefab: {fileID: 2928431893056253439, guid: beb7e0ea83f4dcf4eb7e21e547cab824, type: 3}

@@ -162,10 +162,38 @@ public class objectsHandler : MonoBehaviour
 
     public void generateItem(Node.states state, GameObject prefab) {
 
-        int cols = UnityEngine.Random.Range(0, 100);
-        int rows = UnityEngine.Random.Range(0, 50);
+        Node randomNode = null;
+        bool generable = false;
 
-        Node randomNode = grid[rows, cols];
+        while (!generable) {
+            int cols = UnityEngine.Random.Range(0, 100);
+            int rows = UnityEngine.Random.Range(0, 50);
+
+            randomNode = grid[rows, cols];
+            
+            if (randomNode.Up != null) {
+                if (randomNode.Up.state != Node.states.unoccupied) {
+                    continue;
+                }
+            }
+            if (randomNode.Down != null) {
+                if (randomNode.Down.state != Node.states.unoccupied) {
+                    continue;
+                }
+            }
+            if (randomNode.Left != null) {
+                if (randomNode.Left.state != Node.states.unoccupied) {
+                    continue;
+                }
+            }
+            if (randomNode.Right != null) {
+                if (randomNode.Right.state != Node.states.unoccupied) {
+                    continue;
+                }
+            }
+
+            generable = true;
+        }
 
         randomNode.state = state;
         randomNode.reference = randomNode;

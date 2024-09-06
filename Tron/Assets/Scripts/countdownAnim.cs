@@ -37,20 +37,24 @@ public class countdownAnim : MonoBehaviour
 
         countDown.SetTrigger("Countdown");
         yield return new WaitForSeconds(1f);
+        beepa.volume = PlayerPrefs.GetFloat("SFXVolume", 1f);
         beepa.Play();
 
         countDown2.SetTrigger("Countdown2");
 
         yield return new WaitForSeconds(1f);
+        beepb.volume = PlayerPrefs.GetFloat("SFXVolume", 1f);
         beepb.Play();
 
         countDown3.SetTrigger("Countdown3");
 
         yield return new WaitForSeconds(1f);
+        beepc.volume = PlayerPrefs.GetFloat("SFXVolume", 1f);
         beepc.Play();
 
         yield return new WaitForSeconds(0.3f);
         bgsfx.Play();
+        bgsfx.volume = PlayerPrefs.GetFloat("musicVolume", 1f);
         playerControllerScript.isAlive = true;
         greenBotID.isAlive = true;
         blueBotID.isAlive = true;

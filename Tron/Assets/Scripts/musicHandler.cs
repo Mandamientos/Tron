@@ -13,7 +13,9 @@ public class musicHandler : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         } else {
             Destroy(gameObject);
-        }    
+        }
+
+        audioSource.volume = PlayerPrefs.GetFloat("musicVolume", 1f);
     }
 
     public static musicHandler getInstance () {
